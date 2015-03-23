@@ -51,6 +51,8 @@ module.exports = (function () {
 				if (e) {
 					return colog.error(e);
 				}
+
+				colog.success('> Done !');
 			});
 		});
 	}

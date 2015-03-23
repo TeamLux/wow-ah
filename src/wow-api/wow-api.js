@@ -44,11 +44,13 @@ module.exports = (function () {
 				return callback(e);
 			}
 
-			if (files || files.files ||files.files.length) {
+			if (files || files.files || files.files.length) {
 				return callback(
 					new Error('WowApi: No files found')
 				);
 			}
+
+			colog.success('> Creating ' + files.files.length + ' auction files');
 
 			async.eachSeries(
 				body.files,
@@ -72,4 +74,4 @@ module.exports = (function () {
 	};
 
 	return new WowApi();
-});
+})();

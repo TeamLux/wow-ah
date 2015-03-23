@@ -17,9 +17,11 @@ module.exports = (function () {
 				return callback(e);
 			}
 
-			if (content.auctions) {
+			if (!content.auctions || !content.auctions.length) {
 				return callback(null);
 			}
+
+			colog.success('> Creating ' + auctions.length + ' auctions');
 
 			async.eachSeries(
 				content.auctions,

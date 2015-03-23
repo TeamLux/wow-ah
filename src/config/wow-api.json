@@ -1,17 +1,17 @@
 {
 	"development": {
 		"region": "europe",
-		"realm": "clairvoyants",
+		"realm": "garona",
 		"options": {}
 	},
 	"staging": {
 		"region": "europe",
-		"realm": "clairvoyants",
+		"realm": "garona",
 		"options": {}
 	},
 	"production": {
 		"region": "europe",
-		"realm": "clairvoyants",
+		"realm": "garona",
 		"options": {}
 	}
 }

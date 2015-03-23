@@ -19,8 +19,8 @@ module.exports = (function () {
 	Database.prototype.listen = function (callback) {
 		colog.success('[\u2714] Database listening');
 
-		this.db.once('connected', callback);
-		this.db.once('error', callback);
+		this.db.connection.once('connected', callback);
+		this.db.connection.once('error', callback);
 	};
 
 	Database.prototype.importModels = function (modelsPath) {

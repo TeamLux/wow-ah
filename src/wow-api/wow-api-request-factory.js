@@ -14,7 +14,9 @@ module.exports = (function () {
 			headers: {
 				'User-Agent': 'Wow-AH <https://github.com/Mickael-van-der-Beek/wow-ah>',
 				// 'Accept-Encoding': 'gzip, deflate',
+				'Accept-Language': 'en-US',
 				'Cache-Control': 'no-cache',
+				'Pragma': 'no-cache',
 				'Accept': 'application/json',
 				'Host': host
 			},
@@ -24,7 +26,6 @@ module.exports = (function () {
 			url: url
 		});
 
-		request.setEncoding('utf8');
 		request.setTimeout(10000);
 		request.setNoDelay(true);
 
@@ -32,6 +33,8 @@ module.exports = (function () {
 
 		request
 			.on('response', function (response) {
+				response.setEncoding('utf8');
+
 				if (response.statusCode !== 200) {
 					callback(
 						new Error('WowApiRequestFactory: APi returned HTTP status code `' + response.statusCode + '`')
@@ -59,4 +62,4 @@ module.exports = (function () {
 	};
 
 	return new WowApiRequestFactory();
-});
+})();
