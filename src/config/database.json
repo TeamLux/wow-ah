@@ -1,0 +1,14 @@
+{
+	"development": {
+		"uri": "localhost:27017/wow_ah_dev",
+		"options": {}
+	},
+	"staging": {
+		"uri": "localhost:27017/wow_ah_stag",
+		"options": {}
+	},
+	"production": {
+		"uri": "localhost:27017/wow_ah_prod",
+		"options": {}
+	}
+}

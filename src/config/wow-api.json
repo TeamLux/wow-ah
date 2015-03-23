@@ -1,0 +1,17 @@
+{
+	"development": {
+		"region": "europe",
+		"realm": "clairvoyants",
+		"options": {}
+	},
+	"staging": {
+		"region": "europe",
+		"realm": "clairvoyants",
+		"options": {}
+	},
+	"production": {
+		"region": "europe",
+		"realm": "clairvoyants",
+		"options": {}
+	}
+}
