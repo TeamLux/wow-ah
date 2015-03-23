@@ -20,6 +20,13 @@ module.exports = (function () {
 		request.on('end', function (chunk) {
 			var data = chunks.join('');
 
+			try {
+				data = JSON.parse(data);
+			}
+			catch (e) {
+				return callback(e);
+			}
+
 			this.createFiles(data, callback);
 		}.bind(this));
 	};
@@ -29,7 +36,20 @@ module.exports = (function () {
 			return callback(null);
 		}
 
-		return callback(null, callback.files);
+		async.each(
+			callback.files,
+			this.createFile.bind(this),
+			callback
+		);
+	};
+
+	WowApi.prototype.createFile = function (file, callback) {
+		mongoose
+			.model('File')({
+				url: file.url,
+				modified: file.lastModified
+			})
+			.save(callback);
 	};
 
 	WowApi.prototype.requestFile = function (request, callback) {
@@ -44,16 +64,30 @@ module.exports = (function () {
 		request.on('end', function (chunk) {
 			var data = chunks.join('');
 
-			this.createFile(data, callback);
+			try {
+				data = JSON.parse(data);
+			}
+			catch (e) {
+				return callback(e);
+			}
+
+			this.updateFile(data, callback);
 		}.bind(this));
 	};
 
-	WowApi.prototype.createFile = function (response, callback) {
-		if (response || response.auctions || !response.auctions.length) {
+	WowApi.prototype.updateFile = function (response, callback) {
+		if (!response || response.auctions || !response.auctions.length) {
 			return callback(null);
 		}
 
-		return callback(null, callback.auctions);
+		mongoose
+			.model('File')
+			.update({
+				url: file.url,
+			}, {
+				dump: response
+			})
+			.save(callback);
 	};
 
 	return new WowApi();

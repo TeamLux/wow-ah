@@ -1,5 +1,6 @@
 var WowApiRequestFactory = require('./wow-api-request-factory');
 var WowApiHostFactory = require('./wow-api-host-factory');
+var WowApiUrlFactory = require('./wow-api-url-factory');
 var WowApi = require('./wow-api');
 
 var async = require('async');

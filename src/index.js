@@ -31,7 +31,7 @@ module.exports = (function () {
 
 			colog.success(new Array(81).join('-'));
 
-			new (cron.CronJob)(
+			var job = new (cron.CronJob)(
 				'*/2 * * * * *',
 				function () {
 					WowApiClient.requestAuctionHouse(function (e) {
@@ -44,6 +44,8 @@ module.exports = (function () {
 					colog.error('Cron: End of cron job');
 				}
 			);
+
+			job.start();
 		});
 	}
 
