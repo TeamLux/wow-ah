@@ -10,6 +10,8 @@ module.exports = (function () {
 	 */
 	var UserSchema = require('./user-schema');
 
+	require('./user-life-cycle');
+
 	require('./user-model');
 
 	return UserSchema;

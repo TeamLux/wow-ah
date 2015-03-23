@@ -6,13 +6,30 @@ var async = require('async');
 module.exports = (function () {
 	'use strict';
 
-	FileSchema.pre('save', function (next) {
-		if (this.isNew === true) {
-			return next(null);
-		}
+	FileSchema.statics.createFromApi = function (file, content, callback) {
+		this({
+			modified: file.modified,
+			url: file.url,
+			dump: content
+		})
+		.save(function (e, file) {
+			if (e) {
+				return callback(e);
+			}
 
-		async.auto({
+			if (content.auctions) {
+				return callback(null);
+			}
 
-		}, next);
-	});
+			async.eachSeries(
+				content.auctions,
+				function (auction, cb) {
+					mongoose
+						.model('Auction')
+						.createFromApi(file, auction, cb);
+				},
+				callback
+			);
+		});
+	};
 })();

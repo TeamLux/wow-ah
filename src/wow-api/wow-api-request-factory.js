@@ -5,7 +5,7 @@ module.exports = (function () {
 
 	function WowApiRequestFactory () {}
 
-	WowApiRequestFactory.prototype.getRequest = function (host, url) {
+	WowApiRequestFactory.prototype.getRequest = function (host, url, callback) {
 		var request = http.request({
 			method: 'GET',
 
@@ -24,10 +24,38 @@ module.exports = (function () {
 			url: url
 		});
 
+		request.setEncoding('utf8');
 		request.setTimeout(10000);
 		request.setNoDelay(true);
 
-		return request;
+		var chunks = [];
+
+		request
+			.on('response', function (response) {
+				if (response.statusCode !== 200) {
+					callback(
+						new Error('WowApiRequestFactory: APi returned HTTP status code `' + response.statusCode + '`')
+					);
+				}
+			})
+			.on('error', callback)
+			.on('data', function (chunk) {
+				chunks.push(chunk);
+			})
+			.on('end', function (chunk) {
+				var data = chunks.join('');
+
+				try {
+					data = JSON.parse(data);
+				}
+				catch (e) {
+					return callback(e);
+				}
+
+				this.updateFile(data, callback);
+			}.bind(this));
+
+		request.end();
 	};
 
 	return new WowApiRequestFactory();

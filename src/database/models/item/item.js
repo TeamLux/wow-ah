@@ -10,6 +10,8 @@ module.exports = (function () {
 	 */
 	var ItemSchema = require('./item-schema');
 
+	require('./item-life-cycle');
+
 	require('./item-model');
 
 	return ItemSchema;

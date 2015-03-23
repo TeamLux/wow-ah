@@ -1,93 +1,74 @@
+var WowApiRequestFactory = require('./wow-api-request-factory');
+var WowApiHostFactory = require('./wow-api-host-factory');
+var WowApiUrlFactory = require('./wow-api-url-factory');
+
 var mongoose = require('mongoose');
 var async = require('async');
+var colog = require('colog');
 
 module.exports = (function () {
 	'use strict';
 
 	function WowApi () {}
 
-	WowApi.prototype.init = function () {};
+	WowApi.prototype.init = function (config) {
+		config = config || {};
 
-	WowApi.prototype.requestFiles = function (request, callback) {
-		var chunks = [];
+		this.region = config.region;
+		this.realm = config.realm;
+	};
 
-		request.on('error', callback);
+	WowApi.prototype.queryAuctionHouse = function (callback) {
+		if (typeof callback !== 'function') {
+			throw 'WowApi: Argument `callback` is not a function';
+		}
 
-		request.on('data', function (chunk) {
-			chunks.push(chunk);
-		});
+		var host = WowApiHostFactory.getHost(this.region);
 
-		request.on('end', function (chunk) {
-			var data = chunks.join('');
+		if (host === null) {
+			return callback(
+				new Error('WowApi: Couldn\'t generate host for region `' + this.region + '`')
+			);
+		}
 
-			try {
-				data = JSON.parse(data);
-			}
-			catch (e) {
+		var url = WowApiUrlFactory.getUrl(host, this.realm);
+
+		if (url === null) {
+			return callback(
+				new Error('WowApi: Couldn\'t generate URL for host `' + host + '` and realm `' + this.realm + '`')
+			);
+		}
+
+		WowApiRequestFactory.getRequest(host, url, function (e, files) {
+			if (e) {
 				return callback(e);
 			}
 
-			this.createFiles(data, callback);
-		}.bind(this));
-	};
+			if (files || files.files ||files.files.length) {
+				return callback(
+					new Error('WowApi: No files found')
+				);
+			}
 
-	WowApi.prototype.createFiles = function (response, callback) {
-		if (!response || response.files || !response.files.length) {
-			return callback(null);
-		}
+			async.eachSeries(
+				body.files,
+				function (file, cb) {
+					WowApiRequestFactory.getRequest(host, file, function (e, content) {
+						if (e) {
+							return cb(e);
+						}
 
-		async.each(
-			callback.files,
-			this.createFile.bind(this),
-			callback
-		);
-	};
-
-	WowApi.prototype.createFile = function (file, callback) {
-		mongoose
-			.model('File')({
-				url: file.url,
-				modified: file.lastModified
-			})
-			.save(callback);
-	};
-
-	WowApi.prototype.requestFile = function (request, callback) {
-		var chunks = [];
-
-		request.on('error', callback);
-
-		request.on('data', function (chunk) {
-			chunks.push(chunk);
+						mongoose
+							.model('File')
+							.createFromApi({
+								modified: files.lastModified,
+								url: file
+							}, content, cb);
+					});
+				},
+				callback
+			);
 		});
-
-		request.on('end', function (chunk) {
-			var data = chunks.join('');
-
-			try {
-				data = JSON.parse(data);
-			}
-			catch (e) {
-				return callback(e);
-			}
-
-			this.updateFile(data, callback);
-		}.bind(this));
-	};
-
-	WowApi.prototype.updateFile = function (response, callback) {
-		if (!response || response.auctions || !response.auctions.length) {
-			return callback(null);
-		}
-
-		mongoose
-			.model('File')
-			.update({
-				url: file.url,
-			}, {
-				dump: response
-			})
-			.save(callback);
 	};
 
 	return new WowApi();

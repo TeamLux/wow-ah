@@ -12,7 +12,7 @@ module.exports = (function () {
 		var Database = require('./database/database');
 
 		var wowApiConfig = require('./config/wow-api')[NODE_ENV];
-		var IWowApi = require('./wow-api/i-wow-api');
+		var WowApi = require('./wow-api/wow-api');
 
 		async.series([
 			function database (cb) {
@@ -21,7 +21,7 @@ module.exports = (function () {
 				Database.listen(cb);
 			},
 			function requester (cb) {
-				IWowApi.init(wowApiConfig);
+				WowApi.init(wowApiConfig);
 				cb(null);
 			}
 		], function (e) {
@@ -31,21 +31,27 @@ module.exports = (function () {
 
 			colog.success(new Array(81).join('-'));
 
-			var job = new (cron.CronJob)(
-				'*/2 * * * * *',
-				function () {
-					WowApiClient.requestAuctionHouse(function (e) {
-						if (e) {
-							return colog.error(e);
-						}
-					});
-				},
-				function () {
-					colog.error('Cron: End of cron job');
-				}
-			);
+			// var job = new (cron.CronJob)(
+			// 	'*/2 * * * * *',
+			// 	function () {
+			// 		WowApi.queryAuctionHouse(function (e) {
+			// 			if (e) {
+			// 				return colog.error(e);
+			// 			}
+			// 		});
+			// 	},
+			// 	function () {
+			// 		colog.error('Cron: End of cron job');
+			// 	}
+			// );
 
-			job.start();
+			// job.start();
+
+			WowApi.queryAuctionHouse(function (e) {
+				if (e) {
+					return colog.error(e);
+				}
+			});
 		});
 	}
 
