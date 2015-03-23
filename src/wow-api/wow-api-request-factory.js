@@ -16,8 +16,7 @@ module.exports = (function () {
 			path: parsedUrl.path,
 
 			headers: {
-				// 'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/40.0.2214.115 Safari/537.36',
-				'User-Agent': 'Wow-AH <https://github.com/Mickael-van-der-Beek/wow-ah>',
+				'User-Agent': 'WoW-AH <https://github.com/Mickael-van-der-Beek/wow-ah>',
 				// 'Accept-Encoding': 'gzip, deflate',
 				'Accept-Language': 'en-US',
 				'Cache-Control': 'no-cache',
