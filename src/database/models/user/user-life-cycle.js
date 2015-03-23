@@ -5,12 +5,27 @@ var mongoose = require('mongoose');
 module.exports = (function () {
 	'use strict';
 
-	UserSchema.statics.createFromApi = function (file, auction, callback) {
-		this({
-			username: auction.owner,
+	UserSchema.statics.getorcreateFromApi = function (file, auction, callback) {
+		mongoose
+			.model('User')
+			.findOne({
+				username: auction.owner
+			}, function (e, user) {
+				if (e) {
+					return callback(e);
+				}
 
-			realm: auction.ownerRealm
-		})
-		.save(callback);
+				if (user) {
+					return callback(null, user);
+				}
+
+				mongoose
+					.model('User')({
+						username: auction.owner,
+
+						realm: auction.ownerRealm
+					})
+					.save(callback);
+			});
 	};
 })();

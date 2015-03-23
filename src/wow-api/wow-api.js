@@ -44,7 +44,7 @@ module.exports = (function () {
 				return callback(e);
 			}
 
-			if (files || files.files || files.files.length) {
+			if (!files || !files.files || !files.files.length) {
 				return callback(
 					new Error('WowApi: No files found')
 				);
@@ -53,18 +53,18 @@ module.exports = (function () {
 			colog.success('> Creating ' + files.files.length + ' auction files');
 
 			async.eachSeries(
-				body.files,
+				files.files,
 				function (file, cb) {
-					WowApiRequestFactory.getRequest(host, file, function (e, content) {
+					WowApiRequestFactory.getRequest(host, file.url, function (e, content) {
 						if (e) {
 							return cb(e);
 						}
 
 						mongoose
 							.model('File')
-							.createFromApi({
-								modified: files.lastModified,
-								url: file
+							.getorcreateFromApi({
+								modified: file.lastModified,
+								url: file.url
 							}, content, cb);
 					});
 				},

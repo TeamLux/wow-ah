@@ -22,6 +22,13 @@ module.exports = (function () {
 				var user = results.getorcreateUser;
 				var item = results.georcreateItem;
 
+				if (Array.isArray(user)) {
+					user = user[0];
+				}
+				if (Array.isArray(item)) {
+					item = item[0];
+				}
+
 				mongoose
 					.model('Auction')({
 						file: file._id,
