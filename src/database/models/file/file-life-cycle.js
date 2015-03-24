@@ -20,7 +20,7 @@ module.exports = (function () {
 				}
 
 				if (oldFile) {
-					return callback(null, oldFile);
+					return callback(null, oldFile, false);
 				}
 
 				this.createFromApi(newFile, content, callback);

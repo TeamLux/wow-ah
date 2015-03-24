@@ -71,12 +71,12 @@ module.exports = (function () {
 	WowApi.prototype.createAuctionHouseModels = function (rawFile, content, callback) {
 		mongoose
 			.model('File')
-			.getorcreateFromApi(rawFile, content, function (e, file) {
+			.getorcreateFromApi(rawFile, content, function (e, file, isNew) {
 				if (e) {
 					return callback(e);
 				}
 
-				if (file.url === rawFile.url && +file.modified === rawFile.lastModified) {
+				if (isNew !== true) {
 					colog.success('> Skipping duplicate ' + file.url + ' from ' + rawFile.lastModified);
 
 					return callback(null);
