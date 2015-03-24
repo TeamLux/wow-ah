@@ -76,7 +76,7 @@ module.exports = (function () {
 					return callback(e);
 				}
 
-				if (isNew !== true) {
+				if (isNew === false) {
 					colog.success('> Skipping duplicate ' + file.url + ' from ' + rawFile.lastModified);
 
 					return callback(null);
