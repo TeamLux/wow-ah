@@ -70,15 +70,13 @@ module.exports = (function () {
 			}
 		};
 
-		if (Array.isArray(oldAuction.bids)) {
-			var lastBid = oldAuction.bids.slice(-1);
+		var lastBid = oldAuction.bids.slice(-1);
 
-			if (lastBid.value < newAuction.bid) {
-				oldAuction.bids.push({
-					date: file.modified,
-					value: newAuction.bid
-				});
-			}
+		if (lastBid.value < newAuction.bid) {
+			oldAuction.bids.push({
+				date: file.modified,
+				value: newAuction.bid
+			});
 		}
 
 		oldAuction.save(callback);
