@@ -10,7 +10,7 @@ module.exports = (function () {
 		mongoose
 			.model('File')
 			.findOne({
-				url: file.url
+				url: newFile.url
 			})
 			.exec(function (e, oldFile) {
 				if (e) {
@@ -30,9 +30,7 @@ module.exports = (function () {
 			.model('File')({
 				url: newFile.url,
 
-				modified: new Date(newFile.lastModified),
-
-				dump: content
+				modified: new Date(newFile.lastModified)
 			})
 			.save(callback);
 	};

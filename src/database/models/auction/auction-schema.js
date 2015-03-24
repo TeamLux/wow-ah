@@ -78,8 +78,8 @@ module.exports = (function () {
 			}
 		}],
 
-		dump: {
-			type: 'Mixed'
-		}
+		// dump: {
+		// 	type: 'Mixed'
+		// }
 	});
 })();

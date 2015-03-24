@@ -61,7 +61,7 @@ module.exports = (function () {
 						}
 
 						this.createAuctionHouseModels(file, content, cb);
-					});
+					}.bind(this));
 				}.bind(this),
 				callback
 			);
@@ -76,11 +76,7 @@ module.exports = (function () {
 					return callback(e);
 				}
 
-				if (file) {
-					return callback(null);
-				}
-
-				if (!content.auctions || !content.auctions.auctions) {
+				if (!content.auctions || !content.auctions.auctions || !content.auctions.auctions.length) {
 					return callback(null);
 				}
 

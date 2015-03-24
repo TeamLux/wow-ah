@@ -12,8 +12,8 @@ module.exports = (function () {
 			type: 'Date'
 		},
 
-		dump: {
-			type: 'Mixed'
-		}
+		// dump: {
+		// 	type: 'Mixed'
+		// }
 	});
 })();

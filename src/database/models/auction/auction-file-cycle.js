@@ -49,7 +49,10 @@ module.exports = (function () {
 					id: newAuction.item
 				},
 
-				dump: newAuction
+				bids: [{
+					date: file.modified,
+					value: newAuction.bid
+				}]
 			})
 			.save(callback);
 	};

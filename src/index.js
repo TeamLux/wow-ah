@@ -49,7 +49,7 @@ module.exports = (function () {
 
 			WowApi.queryAuctionHouse(function (e) {
 				if (e) {
-					return colog.error(e);
+					return colog.error(e) && colog.error(e.stack);
 				}
 
 				colog.success('> Done !');
