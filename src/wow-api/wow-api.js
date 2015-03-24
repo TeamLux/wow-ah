@@ -77,7 +77,7 @@ module.exports = (function () {
 				}
 
 				if (file.url === rawFile.url && +file.modified === rawFile.lastModified) {
-					colog.success('> Skipping duplicate ' + file.url);
+					colog.success('> Skipping duplicate ' + file.url + ' from ' + rawFile.lastModified);
 
 					return callback(null);
 				}
