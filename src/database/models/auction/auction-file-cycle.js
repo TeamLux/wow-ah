@@ -49,6 +49,11 @@ module.exports = (function () {
 					id: newAuction.item
 				},
 
+				buyout: {
+					date: file.modified,
+					value: newAuction.buyout
+				},
+
 				bids: [{
 					date: file.modified,
 					value: newAuction.bid
