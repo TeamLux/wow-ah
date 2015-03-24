@@ -60,7 +60,7 @@ module.exports = (function () {
 							return cb(e);
 						}
 
-						this.createAuctionHouseModels(file, content, cb);						
+						this.createAuctionHouseModels(file, content, cb);
 					});
 				}.bind(this),
 				callback
@@ -71,7 +71,48 @@ module.exports = (function () {
 	WowApi.prototype.createAuctionHouseModels = function (file, content, callback) {
 		mongoose
 			.model('File')
-			.getorcreateFromApi(file, content, callback);
+			.getorcreateFromApi(file, content, function (e, file) {
+				if (e) {
+					return callback(e);
+				}
+
+				if (file) {
+					return callback(null);
+				}
+
+				if (!content.auctions || !content.auctions.auctions) {
+					return callback(null);
+				}
+
+				colog.success('> Creating ' + content.auctions.auctions.length + ' auctions');
+
+				var counter = 0;
+				var total = content.auctions.auctions.length;
+
+				async.eachSeries(
+					content.auctions.auctions,
+					function (auction, cb) {
+						counter += 1;
+
+						if ((counter % 1000) === 0) {
+							colog.success('> Created ' + counter + '/' + total + ' (' + (counter / (total / 100)) + '%)');
+						}
+
+						mongoose
+							.model('Auction')
+							.upsertFromApi(file, auction, cb);
+					},
+					function (e) {
+						if (e) {
+							return callback(e);
+						}
+
+						mongoose
+							.model('Auction')
+							.diffFromApi(file, callback);
+					}
+				);
+			});
 	};
 
 	return new WowApi();

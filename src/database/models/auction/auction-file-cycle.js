@@ -75,5 +75,10 @@ module.exports = (function () {
 
 		oldAuction.save(callback);
 	};
+
+	// TODO: Diff all auctions that were not present in the present file and set status, buyout
+	AuctionSchema.statics.diffFromApi = function (file, callback) {
+		callback(null);
+	};
 })();
 
