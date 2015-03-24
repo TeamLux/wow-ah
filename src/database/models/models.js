@@ -7,9 +7,5 @@ module.exports = (function () {
 
 	require('./auction/auction');
 
-	require('./user/user');
-
 	require('./file/file');
-
-	require('./item/item');
 })();

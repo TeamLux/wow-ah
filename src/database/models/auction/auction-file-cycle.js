@@ -6,42 +6,74 @@ var async = require('async');
 module.exports = (function () {
 	'use strict';
 
-	AuctionSchema.statics.createFromApi = function (file, auction, callback) {
-		async.auto({
-			georcreateItem: function (cb) {
-				mongoose
-					.model('Item')
-					.getorcreateFromApi(file, auction, cb);
-			},
-			getorcreateUser: function (cb) {
-				mongoose
-					.model('User')
-					.getorcreateFromApi(file, auction, cb);
-			},
-			createAuction: ['georcreateItem', 'getorcreateUser', function (cb, results) {
-				var user = results.getorcreateUser;
-				var item = results.georcreateItem;
-
-				if (Array.isArray(user)) {
-					user = user[0];
-				}
-				if (Array.isArray(item)) {
-					item = item[0];
+	AuctionSchema.statics.upsertFromApi = function (file, newAuction, callback) {
+		mongoose
+			.model('Auction')
+			.findOne({
+				'auction.id': newAuction.auc
+			})
+			.exec(function (e, oldAuction) {
+				if (e) {
+					return callback(e);
 				}
 
-				mongoose
-					.model('Auction')({
+				if (oldAuction) {
+					return this.updateFromApi(file, oldAuction, newAuction, callback);
+				}
+
+				this.createFromApi(file, newAuction, callback);
+			}.bind(this));
+	};
+
+	AuctionSchema.statics.createFromApi = function (file, newAuction, callback) {
+		mongoose
+			.model('Auction')({
+				boundaries: {
+					start: {
 						file: file._id,
-						user: user._id,
-						item: item._id,
+						date: file.modified
+					}
+				},
 
-						quantity: auction.quantity,
-						buyout: auction.buyout,
-						bid: auction.bid,
-						tl: auction.timeLeft
-					})
-					.save(cb);
-			}]
-		}, callback);
+				auction: {
+					id: newAuction.auc
+				},
+
+				user: {
+					realm: newAuction.ownerRealm,
+					id: newAuction.owner
+				},
+
+				item: {
+					quantity: newAuction.quantity,
+					id: newAuction.item
+				},
+
+				dump: newAuction
+			})
+			.save(callback);
+	};
+
+	AuctionSchema.statics.updateFromApi = function (file, oldAuction, newAuction, callback) {
+		oldAuction.boundaries = {
+			end: {
+				file: file._id,
+				date: file.modified
+			}
+		};
+
+		if (Array.isArray(oldAuction.bids)) {
+			var lastBid = oldAuction.bids.slice(-1);
+
+			if (lastBid.value < newAuction.bid) {
+				oldAuction.bids.push({
+					date: file.modified,
+					value: newAuction.bid
+				});
+			}
+		}
+
+		oldAuction.save(callback);
 	};
 })();
+

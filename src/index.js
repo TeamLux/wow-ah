@@ -32,7 +32,7 @@ module.exports = (function () {
 			colog.success(new Array(81).join('-'));
 
 			// var job = new (cron.CronJob)(
-			// 	'*/2 * * * * *',
+			// 	'0 * * * * *',
 			// 	function () {
 			// 		WowApi.queryAuctionHouse(function (e) {
 			// 			if (e) {

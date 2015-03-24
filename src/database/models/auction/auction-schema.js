@@ -4,30 +4,82 @@ module.exports = (function () {
 	'use strict';
 
 	return new (mongoose.Schema)({
-		file: {
-			type: 'ObjectId',
-			ref: 'File'
+		boundaries: {
+			start: {
+				file: {
+					type: 'ObjectId',
+					ref: 'File'
+				},
+				date: {
+					type: 'Date'
+				}
+			},
+			end: {
+				file: {
+					type: 'ObjectId',
+					ref: 'File'
+				},
+				date: {
+					type: 'Date'
+				}
+			}
 		},
+
+		auction: {
+			id: {
+				type: 'String'
+			}
+		},
+
 		user: {
-			type: 'ObjectId',
-			ref: 'User'
+			realm: {
+				type: 'String'
+			},
+			id: {
+				type: 'String'
+			}
 		},
+
 		item: {
-			type: 'ObjectId',
-			ref: 'Item'
+			quantity: {
+				type: 'Number'
+			},
+			id: {
+				type: 'String'
+			}
 		},
-		
-		quantity: {
-			type: 'Number'
+
+		/**
+		 * Possible values:
+		 * bid = A player bout the item though a winning bid
+		 * buyout = A player bought the item in direct buyout
+		 * listed = Item that are still on auction
+		 * expired = Nobody bought the item
+		 */
+		status: {
+			type: 'String',
+			default: 'listed'
 		},
+
 		buyout: {
-			type: 'Number'
+			date: {
+				type: 'Date'
+			},
+			value: {
+				type: 'Number'
+			}
 		},
-		bid: {
-			type: 'Number'
-		},
-		tl: {
-			type: 'String'
+		bids: [{
+			date: {
+				type: 'Date'
+			},
+			value: {
+				type: 'Number'
+			}
+		}],
+
+		dump: {
+			type: 'Mixed'
 		}
 	});
 })();

@@ -60,17 +60,18 @@ module.exports = (function () {
 							return cb(e);
 						}
 
-						mongoose
-							.model('File')
-							.getorcreateFromApi({
-								modified: file.lastModified,
-								url: file.url
-							}, content, cb);
+						this.createAuctionHouseModels(file, content, cb);						
 					});
-				},
+				}.bind(this),
 				callback
 			);
-		});
+		}.bind(this));
+	};
+
+	WowApi.prototype.createAuctionHouseModels = function (file, content, callback) {
+		mongoose
+			.model('File')
+			.getorcreateFromApi(file, content, callback);
 	};
 
 	return new WowApi();
