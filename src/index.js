@@ -5,7 +5,7 @@ var cron = require('cron');
 module.exports = (function () {
 	'use strict';
 
-	function Server (callback) {
+	function Server () {
 		var NODE_ENV = process.env.NODE_ENV || 'production';
 
 		var databaseConfig = require('./config/database')[NODE_ENV];
@@ -26,7 +26,7 @@ module.exports = (function () {
 			}
 		], function (e) {
 			if (e) {
-				return (callback || colog.error)(e);
+				return colog.error(e) && colog.error(e.stack);
 			}
 
 			colog.success(new Array(81).join('-'));
@@ -36,7 +36,7 @@ module.exports = (function () {
 				function () {
 					WowApi.queryAuctionHouse(function (e) {
 						if (e) {
-							return colog.error(e);
+							return colog.error(e) && colog.error(e.stack);
 						}
 					});
 				},
