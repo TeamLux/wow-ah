@@ -10,7 +10,9 @@ module.exports = (function () {
 		mongoose
 			.model('File')
 			.findOne({
-				url: newFile.url
+				url: newFile.url,
+
+				modified: new Date(newFile.lastModified)
 			})
 			.exec(function (e, oldFile) {
 				if (e) {

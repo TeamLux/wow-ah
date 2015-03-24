@@ -68,12 +68,18 @@ module.exports = (function () {
 		}.bind(this));
 	};
 
-	WowApi.prototype.createAuctionHouseModels = function (file, content, callback) {
+	WowApi.prototype.createAuctionHouseModels = function (rawFile, content, callback) {
 		mongoose
 			.model('File')
-			.getorcreateFromApi(file, content, function (e, file) {
+			.getorcreateFromApi(rawFile, content, function (e, file) {
 				if (e) {
 					return callback(e);
+				}
+
+				if (file.url === rawFile.url && +file.modified === rawFile.lastModified) {
+					colog.success('> Skipping duplicate ' + file.url);
+
+					return callback(null);
 				}
 
 				if (!content.auctions || !content.auctions.auctions || !content.auctions.auctions.length) {
