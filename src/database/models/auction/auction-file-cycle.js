@@ -78,15 +78,6 @@ module.exports = (function () {
 				value: newAuction.bid
 			});
 		}
-		else {
-			console.log('OLD=', oldAuction);
-			console.log('LAST=', lastBid);
-			console.log('TYPE_LAST=', typeof lastBid.value);
-			console.log('VAL_LAST=', lastBid.value);
-			console.log('TYPE_LAST=', typeof newAuction.bid);
-			console.log('VAL_LAST=', newAuction.bid);
-			console.log('IS_LARGER=', (lastBid.value < newAuction.bid));
-		}
 
 		oldAuction.save(callback);
 	};
