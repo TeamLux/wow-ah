@@ -79,6 +79,8 @@ module.exports = (function () {
 			});
 		}
 		else {
+			console.log('OLD=', oldAuction);
+			console.log('LAST=', lastBid);
 			console.log('TYPE_LAST=', typeof lastBid.value);
 			console.log('VAL_LAST=', lastBid.value);
 			console.log('TYPE_LAST=', typeof newAuction.bid);
