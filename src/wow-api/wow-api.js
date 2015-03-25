@@ -91,7 +91,7 @@ module.exports = (function () {
 				var counter = 0;
 				var total = content.auctions.auctions.length;
 
-				async.eachSeries(
+				async.each(
 					content.auctions.auctions,
 					function (auction, cb) {
 						counter += 1;
