@@ -59,7 +59,9 @@ module.exports = (function () {
 					value: newAuction.bid
 				}]
 			})
-			.save(callback);
+			.save(function (e) {
+				callback(e);
+			});
 	};
 
 	AuctionSchema.statics.updateFromApi = function (file, oldAuction, newAuction, callback) {
@@ -79,7 +81,9 @@ module.exports = (function () {
 			});
 		}
 
-		oldAuction.save(callback);
+		oldAuction.save(function (e) {
+			callback(e);
+		});
 	};
 
 	// TODO: Diff all auctions that were not present in the present file and set status, buyout

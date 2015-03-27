@@ -91,8 +91,9 @@ module.exports = (function () {
 				var counter = 0;
 				var total = content.auctions.auctions.length;
 
-				async.each(
+				async.eachLimit(
 					content.auctions.auctions,
+					20,
 					function (auction, cb) {
 						counter += 1;
 
@@ -108,6 +109,9 @@ module.exports = (function () {
 						if (e) {
 							return callback(e);
 						}
+
+						// Nulling variables to clear memory
+						content = null;
 
 						mongoose
 							.model('Auction')
