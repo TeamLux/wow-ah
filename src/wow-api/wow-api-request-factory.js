@@ -1,3 +1,4 @@
+var colog = require('colog');
 var http = require('http');
 var url = require('url');
 
@@ -54,6 +55,7 @@ module.exports = (function () {
 							data = JSON.parse(data);
 						}
 						catch (e) {
+							colog.error(data);
 							return callback(e);
 						}
 
