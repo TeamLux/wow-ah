@@ -34,8 +34,6 @@ module.exports = (function () {
 
 				modified: new Date(newFile.lastModified)
 			})
-			.save(function (e) {
-				callback(e);
-			});
+			.save(callback);
 	};
 })();

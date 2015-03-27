@@ -10,7 +10,7 @@ module.exports = (function () {
 	 */
 	var AuctionSchema = require('./auction-schema');
 
-	require('./auction-file-cycle');
+	require('./auction-life-cycle');
 
 	require('./auction-model');
 
