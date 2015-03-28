@@ -5,6 +5,8 @@ var WowApiUrlFactory = require('./wow-api-url-factory');
 var mongoose = require('mongoose');
 var async = require('async');
 var colog = require('colog');
+var path = require('path');
+var fs = require('fs');
 
 module.exports = (function () {
 	'use strict';
@@ -68,6 +70,25 @@ module.exports = (function () {
 		}.bind(this));
 	};
 
+	WowApi.prototype.createAuctionHouseFile = function (file, content) {
+		var uuid = file.url.match(/[0-9a-f]{32}/);
+
+		if (uuid === null) {
+			colog.error('> File ' + file.url + ' has no UUID');
+			return null;
+		}
+
+		var extension = 'json';
+		var filename = uuid + '-' + file.modified.getTime() + '.' + extension;
+		var pathname = path.resolve(
+			__dirname,
+			'../../data',
+			filename
+		);
+
+		fs.writeFileSync(pathname, JSON.stringify(content), 'utf8');
+	};
+
 	WowApi.prototype.createAuctionHouseModels = function (rawFile, content, callback) {
 		mongoose
 			.model('File')
@@ -88,12 +109,14 @@ module.exports = (function () {
 
 				colog.success('> Creating ' + content.auctions.auctions.length + ' auctions');
 
+				this.createAuctionHouseFile(file, content);
+
 				var counter = 0;
 				var total = content.auctions.auctions.length;
 
 				async.eachLimit(
 					content.auctions.auctions,
-					50,
+					20,
 					function (auction, cb) {
 						counter += 1;
 
@@ -118,7 +141,7 @@ module.exports = (function () {
 							.diffFromApi(file, callback);
 					}
 				);
-			});
+			}.bind(this));
 	};
 
 	return new WowApi();

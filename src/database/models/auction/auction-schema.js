@@ -49,18 +49,6 @@ module.exports = (function () {
 			}
 		},
 
-		/**
-		 * Possible values:
-		 * bid = A player bout the item though a winning bid
-		 * buyout = A player bought the item in direct buyout
-		 * listed = Item that are still on auction
-		 * expired = Nobody bought the item
-		 */
-		status: {
-			type: 'String',
-			default: 'listed'
-		},
-
 		buyout: {
 			date: {
 				type: 'Date'
@@ -69,17 +57,13 @@ module.exports = (function () {
 				type: 'Number'
 			}
 		},
-		bids: [{
+		bid: {
 			date: {
 				type: 'Date'
 			},
 			value: {
 				type: 'Number'
 			}
-		}],
-
-		// dump: {
-		// 	type: 'Mixed'
-		// }
+		}
 	});
 })();

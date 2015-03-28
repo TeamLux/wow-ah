@@ -31,29 +31,29 @@ module.exports = (function () {
 
 			colog.success(new Array(81).join('-'));
 
-			var job = new (cron.CronJob)(
-				'0 * * * * *',
-				function () {
-					WowApi.queryAuctionHouse(function (e) {
-						if (e) {
-							return colog.error(e) && colog.error(e.stack);
-						}
-					});
-				},
-				function () {
-					colog.error('Cron: End of cron job');
-				}
-			);
-
-			job.start();
-
-			// WowApi.queryAuctionHouse(function (e) {
-			// 	if (e) {
-			// 		return colog.error(e) && colog.error(e.stack);
+			// var job = new (cron.CronJob)(
+			// 	'0 * * * * *',
+			// 	function () {
+			// 		WowApi.queryAuctionHouse(function (e) {
+			// 			if (e) {
+			// 				return colog.error(e) && colog.error(e.stack);
+			// 			}
+			// 		});
+			// 	},
+			// 	function () {
+			// 		colog.error('Cron: End of cron job');
 			// 	}
+			// );
 
-			// 	colog.success('> Done !');
-			// });
+			// job.start();
+
+			WowApi.queryAuctionHouse(function (e) {
+				if (e) {
+					return colog.error(e) && colog.error(e.stack);
+				}
+
+				colog.success('> Done !');
+			});
 		});
 	}
 
