@@ -54,10 +54,10 @@ module.exports = (function () {
 					value: newAuction.buyout
 				},
 
-				bids: [{
+				bid: {
 					date: file.modified,
 					value: newAuction.bid
-				}]
+				}
 			})
 			.save(function (e) {
 				callback(e);
