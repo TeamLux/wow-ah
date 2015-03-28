@@ -72,15 +72,6 @@ module.exports = (function () {
 			}
 		};
 
-		var lastBid = oldAuction.bids.slice(-1);
-
-		if (lastBid.value < newAuction.bid) {
-			oldAuction.bids.push({
-				date: file.modified,
-				value: newAuction.bid
-			});
-		}
-
 		oldAuction.save(function (e) {
 			callback(e);
 		});
