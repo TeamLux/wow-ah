@@ -111,6 +111,8 @@ module.exports = (function () {
 
 				this.createAuctionHouseFile(file, content);
 
+				return callback(null);
+
 				var counter = 0;
 				var total = content.auctions.auctions.length;
 
