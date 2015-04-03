@@ -1,5 +1,4 @@
-var eventStram = require('event-stream');
-var JSONStream = require('JSONStream');
+var eventStream = require('event-stream');
 var mongoose = require('mongoose');
 var colog = require('colog');
 var async = require('async');
@@ -33,6 +32,10 @@ module.exports = (function () {
 					);
 				}
 
+				filenames = filenames.map(function (filename) {
+					return path.resolve(absDirname, filename);
+				});
+
 				this.syncFiles(filenames, callback);
 			}.bind(this)
 		);
@@ -63,30 +66,38 @@ module.exports = (function () {
 		}
 
 		fs
-		.createReadStream(
-			filename,
-			{
-				encoding: 'utf8',
-				flags: 'r'
-			}
-		)
-		.pipe(JSONStream.parse('*'))
-		.pipe(
-			eventStream.wait(function (e, body) {
-				if (e) {
-					return _callback(e);
+			.createReadStream(
+				filename,
+				{
+					encoding: 'utf8',
+					flags: 'r'
 				}
+			)
+			.pipe(
+				eventStream.wait(function (e, body) {
+					if (e) {
+						return callback(e);
+					}
 
-				filename = filename.split('-');
+					try {
+						body = JSON.parse(body);
+					}
+					catch (e) {
+						return callback(e);
+					}
 
-				var file = {
-					url: 'http://eu.battle.net/auction-data/' + filename[0] + '/auctions.json',
-					modified: new Date(filename[1])
-				};
+					filename = filename.split('-');
 
-				this.syncAuctions(file, body, callback);
-			}.bind(this))
-		);
+					var file = {
+						url: 'http://eu.battle.net/auction-data/' + filename[0] + '/auctions.json',
+						modified: new Date(
+							parseInt(filename[1], 10)
+						)
+					};
+
+					this.syncAuctions(file, body, callback);
+				}.bind(this))
+			);
 	};
 
 	FileSync.prototype.syncAuctions = function (file, body, callback) {
@@ -96,11 +107,13 @@ module.exports = (function () {
 			);
 		}
 
-		var length = body.auctions.auctions;
+		var length = body.auctions.auctions.length;
 		var counter = 0;
 
-		async.eachSeries(
+		// async.eachSeries(
+		async.eachLimit(
 			body.auctions.auctions,
+			20,
 			function (auction, cb) {
 				counter += 1;
 
@@ -117,4 +130,4 @@ module.exports = (function () {
 	};
 
 	return new FileSync();
-});
+})();

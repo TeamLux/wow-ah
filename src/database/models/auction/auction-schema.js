@@ -17,13 +17,12 @@ module.exports = (function () {
 			type: 'Date'
 		},
 
-		state: {
-			type: 'String'
-		},
-
 		auction: {
 			id: {
-				type: 'String'
+				type: 'String',
+				index: {
+					unique: true
+				}
 			}
 		},
 

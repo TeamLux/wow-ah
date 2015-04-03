@@ -25,14 +25,8 @@ module.exports = (function () {
 
 	AuctionSchema.statics.createFromApi = function (file, newAuction, callback) {
 		this({
-			startFile: {
-				type: file.modified
-			},
-			endFile: {
-				type: file.modified
-			},
-
-			state: 'undefined',
+			startFile: file.modified,
+			endFile: file.modified,
 
 			auction: {
 				id: newAuction.auc

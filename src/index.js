@@ -25,15 +25,23 @@ module.exports = (function () {
 
 			colog.success(new Array(81).join('-'));
 
+			var start = new Date();
+
+			colog.success('> Start syncing files at ' + start);
+
 			FileSync.sync(
 				'/Users/kollektiv/Documents/wow-ah/03-04-2015/data',
 				function (e) {
+					var end = new Date();
+
 					if (e) {
-						colog.error(e);
+						colog.error(e) && colog.error(e.stack);
 					}
 					else {
-						colog.success('Done!');
+						colog.success('End syncing file at ' + end);
 					}
+
+					colog.success('Duration is ' + (end - start) + ' ms');
 
 					process.exit(1);
 				}
