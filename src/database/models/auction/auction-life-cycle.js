@@ -1,14 +1,12 @@
 var AuctionSchema = require('./auction-schema');
 
 var mongoose = require('mongoose');
-var async = require('async');
 
 module.exports = (function () {
 	'use strict';
 
 	AuctionSchema.statics.upsertFromApi = function (file, newAuction, callback) {
-		mongoose
-			.model('Auction')
+		this
 			.findOne({
 				'auction.id': newAuction.auc
 			})
@@ -18,7 +16,7 @@ module.exports = (function () {
 				}
 
 				if (oldAuction) {
-					return this.updateFromApi(file, oldAuction, newAuction, callback);
+					return this.updateFromApi(file, oldAuction, callback);
 				}
 
 				this.createFromApi(file, newAuction, callback);
@@ -26,60 +24,57 @@ module.exports = (function () {
 	};
 
 	AuctionSchema.statics.createFromApi = function (file, newAuction, callback) {
-		mongoose
-			.model('Auction')({
-				boundaries: {
-					start: {
-						file: file._id,
-						date: file.modified
-					}
-				},
+		this({
+			startFile: {
+				type: file.modified
+			},
+			endFile: {
+				type: file.modified
+			},
 
-				auction: {
-					id: newAuction.auc
-				},
+			state: 'undefined',
 
-				user: {
-					realm: newAuction.ownerRealm,
-					id: newAuction.owner
-				},
+			auction: {
+				id: newAuction.auc
+			},
 
-				item: {
-					quantity: newAuction.quantity,
-					id: newAuction.item
-				},
+			user: {
+				realm: newAuction.ownerRealm,
+				id: newAuction.owner
+			},
 
-				buyout: {
-					date: file.modified,
-					value: newAuction.buyout
-				},
+			item: {
+				quantity: newAuction.quantity,
+				id: newAuction.item
+			},
 
-				bid: {
-					date: file.modified,
-					value: newAuction.bid
-				}
-			})
-			.save(function (e) {
-				callback(e);
-			});
-	};
+			buyout: {
+				date: file.modified,
+				value: newAuction.buyout
+			},
 
-	AuctionSchema.statics.updateFromApi = function (file, oldAuction, newAuction, callback) {
-		oldAuction.boundaries = {
-			end: {
-				file: file._id,
-				date: file.modified
+			bid: {
+				date: file.modified,
+				value: newAuction.bid
 			}
-		};
-
-		oldAuction.save(function (e) {
+		})
+		.save(function (e) {
 			callback(e);
 		});
 	};
 
-	// TODO: Diff all auctions that were not present in the present file and set status, buyout
-	AuctionSchema.statics.diffFromApi = function (file, callback) {
-		callback(null);
+	AuctionSchema.statics.updateFromApi = function (file, oldAuction, callback) {
+		if (file.modified < oldAuction.startFile) {
+			oldAuction.startFile = file.modified;
+		}
+
+		if (file.modified > oldAuction.endFile) {
+			oldAuction.endFile = file.modified;
+		}
+
+		oldAuction.save(function (e) {
+			callback(e);
+		});
 	};
 })();
 

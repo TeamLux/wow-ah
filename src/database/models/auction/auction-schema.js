@@ -4,25 +4,21 @@ module.exports = (function () {
 	'use strict';
 
 	return new (mongoose.Schema)({
-		boundaries: {
-			start: {
-				file: {
-					type: 'ObjectId',
-					ref: 'File'
-				},
-				date: {
-					type: 'Date'
-				}
-			},
-			end: {
-				file: {
-					type: 'ObjectId',
-					ref: 'File'
-				},
-				date: {
-					type: 'Date'
-				}
-			}
+		startFile: {
+			type: 'Date'
+		},
+		startEst: {
+			type: 'Date'
+		},
+		endFile: {
+			type: 'Date'
+		},
+		endEst: {
+			type: 'Date'
+		},
+
+		state: {
+			type: 'String'
 		},
 
 		auction: {

@@ -6,6 +6,4 @@ module.exports = (function () {
 	colog.success('[\u2714] Database models:');
 
 	require('./auction/auction');
-
-	require('./file/file');
 })();
