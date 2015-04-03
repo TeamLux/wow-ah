@@ -59,7 +59,9 @@ module.exports = (function () {
 	};
 
 	FileSync.prototype.syncFile = function (filename, callback) {
-		if (/^([0-9a-f]{32}-[0-9]{13})$/.test(filename)) {
+		filename = filename.split('/').pop();
+
+		if (!/^([0-9a-f]{32}-[0-9]{13}\.json)$/.test(filename)) {
 			return callback(
 				new Error('FileSync: Invalid filename `' + filename + '`')
 			);
@@ -91,7 +93,10 @@ module.exports = (function () {
 					var file = {
 						url: 'http://eu.battle.net/auction-data/' + filename[0] + '/auctions.json',
 						modified: new Date(
-							parseInt(filename[1], 10)
+							parseInt(
+								filename[1].slice(0, -5),
+								10
+							)
 						)
 					};
 
