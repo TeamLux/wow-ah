@@ -58,8 +58,8 @@ module.exports = (function () {
 		);
 	};
 
-	FileSync.prototype.syncFile = function (filename, callback) {
-		filename = filename.split('/').pop();
+	FileSync.prototype.syncFile = function (pathname, callback) {
+		var filename = pathname.split('/').pop();
 
 		if (!/^([0-9a-f]{32}-[0-9]{13}\.json)$/.test(filename)) {
 			return callback(
@@ -69,7 +69,7 @@ module.exports = (function () {
 
 		fs
 			.createReadStream(
-				filename,
+				pathname,
 				{
 					encoding: 'utf8',
 					flags: 'r'
@@ -115,10 +115,9 @@ module.exports = (function () {
 		var length = body.auctions.auctions.length;
 		var counter = 0;
 
-		// async.eachSeries(
 		async.eachLimit(
 			body.auctions.auctions,
-			20,
+			25,
 			function (auction, cb) {
 				counter += 1;
 
