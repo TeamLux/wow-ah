@@ -12,6 +12,7 @@ public class IDatabase {
 
     private Connection connection;
     private String database;
+    private String query;
 
     public IDatabase (String hostname, String database, String username, String password) throws SQLException {
         this.database = database;
@@ -19,6 +20,24 @@ public class IDatabase {
         connection = DriverManager.getConnection(
                 "jdbc:mysql://" + hostname + "/" + database + "?user=" + username + "&password=" + password
         );
+        
+        StringBuilder sb = new StringBuilder(20); //grosso modo
+        sb.append("INSERT INTO ");
+        sb.append(database);
+        sb.append(".auctions VALUES(");
+        sb.append("default,"); 	
+        sb.append("?,");		// 1)  startfile 	(Date)
+        sb.append("?,");		// 2)  startest		(Date)
+        sb.append("?,");		// 3)  endfile		(Date)
+        sb.append("?,");		// 4)  endest		(Date)
+        sb.append("?,");		// 5)  auctionid	(String)
+        sb.append("?,");		// 6)  userid		(String)
+        sb.append("?,");		// 7)  realm		(String)
+        sb.append("?,");		// 8)  itemid		(String)  
+        sb.append("?,");		// 9)  quant		(Number)
+        sb.append("?,");		// 10) buyout		(Number)
+        sb.append("?)");		// 11) bid			(Number)
+        query = sb.toString();
     }
 
     public void createAuctions (JSONObject[] auctions, JSONObject file) throws SQLException {
@@ -40,33 +59,8 @@ public class IDatabase {
     }
 
     public PreparedStatement createAuction (JSONObject auction, JSONObject file) throws SQLException {
-        PreparedStatement preparedStatement = connection.prepareStatement(
-                "INSERT INTO " + database + ".auctions values (" +
-                        "default," +
-                        // 1) startfile (Date)
-                        "?," +
-                        // 2) startest (Date)
-                        "?," +
-                        // 3) endfile (Date)
-                        "?," +
-                        // 4) endest (Date)
-                        "?," +
-                        // 5) auctionid (String)
-                        "?," +
-                        // 6) userid (String)
-                        "?," +
-                        // 7) realm (String)
-                        "?," +
-                        // 8) itemid (String)
-                        "?," +
-                        // 9) quant (Number)
-                        "?," +
-                        // 10) buyout (Number)
-                        "?," +
-                        // 11) bid (Number)
-                        "?" +
-                ")"
-        );
+    	
+        PreparedStatement preparedStatement = connection.prepareStatement(query);
 
         // 1) startfile (Date)
         preparedStatement.setDate(1, new java.sql.Date(
