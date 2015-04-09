@@ -27,8 +27,7 @@ public abstract class Program {
 		//2258948a184dc11ddc78b107afc423bd-1427586282000.json
 		//http://www.wowhead.com/item=111557/sumptuous-fur
 
-		analyseItem(111557, "data", "111557.csv");
-		
+		analyseItem(111557, "/Users/kollektiv/Documents/wow-ah/08-04-2015/data", "111557.csv");
 	}
 	
 	public static void analyseItem(int itemId, String directoryPath, String junckerPath) throws FileNotFoundException{
@@ -48,7 +47,7 @@ public abstract class Program {
 			pw.write("date;time;average price;quantity available;auction count;" + LINE_SEP);
 			pw.flush();
 			for(int i = 0 ; i < files.length ; i++){
-				System.out.println("File n°" + (i + 1) + "/" + files.length);
+				System.out.println("File nÂ°" + (i + 1) + "/" + files.length);
 				try {
 					timestampStr = files[i].getName().substring(files[i].getName().lastIndexOf('-') + 1, files[i].getName().lastIndexOf('.'));
 					timestampVal = Long.parseLong(timestampStr);
