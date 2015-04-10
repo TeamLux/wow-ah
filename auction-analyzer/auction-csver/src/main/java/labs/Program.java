@@ -138,6 +138,23 @@ public abstract class Program {
 			
 			//  On passe au suivant
 		}
+		
+		// On attend la fin des threads !
+		filePicked = true; // On recycle
+		while(filePicked){
+			filePicked = false;
+			for(int i = 0 ; i < tPool.length && !filePicked; i++){
+				if(tPool[i] != null && tPool[i].isAlive())
+					filePicked = true;
+			}
+			
+			if(filePicked)
+				try {
+					System.out.println("Attente de thread");
+					Thread.sleep(200);
+				} catch (InterruptedException e) { }
+		}
+		
 		return files.length;
 	}
 	
